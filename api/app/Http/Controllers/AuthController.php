@@ -70,4 +70,21 @@ class AuthController extends Controller
         // If authentication fails, return an error response
         return response()->json(['error' => 'Unauthorized'], 401);
     }
+
+        public function logout(Request $request)
+{
+    // Make sure the user is authenticated
+    $user = $request->user();
+
+    if ($user) {
+        // Revoke all of the user's tokens
+        $user->tokens->each(function ($token) {
+            $token->delete();
+        });
+
+        return response()->json(['message' => 'Successfully logged out'], 200);
+    }
+
+    return response()->json(['message' => 'User not authenticated'], 401);
+}
 }
